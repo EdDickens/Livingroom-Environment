@@ -1,7 +1,7 @@
 substitutions:
   name: "livingroom-enviro"
   friendly_name: livingroom-enviro
-
+#---------------------------------------------------------------------------------------------------
 esphome:
   name: ${name}
   friendly_name: ${friendly_name}
@@ -9,46 +9,52 @@ esphome:
   project:
     name: esphome.web
     version: '1.0'
-
+#---------------------------------------------------------------------------------------------------
 esp32:
   board: esp32dev
   framework:
     type: arduino
-
+#---------------------------------------------------------------------------------------------------
 # Enable logging
 logger:
     baud_rate: 0
-
+#---------------------------------------------------------------------------------------------------
 # Enable Home Assistant API
 api:
   encryption: 
     key: !secret haapi_key
-
+#---------------------------------------------------------------------------------------------------
 ota:
   - platform: esphome
     password: !secret ota_password
-
+#---------------------------------------------------------------------------------------------------
+# Creates a simple web server on the node that can be accessed through any browser
+#web_server:
+#  port: 80
+#  ota: false
+#  auth:
+#    username: admin
+#    password: !secret web_password
+#---------------------------------------------------------------------------------------------------
 wifi:
   ssid: !secret wifi_ssid
   password: !secret wifi_password
 
   fast_connect: off
-
+#--------------------------------------
   # Enable fallback hotspot (captive portal) in case wifi connection fails
-  ap:
-    ssid: "Livingroom Fallback"
-    password: !secret fb_password
-
-captive_portal:
-
+#  ap:
+#    ssid: "Livingroom Fallback"
+#    password: !secret fb_password
+#---------------------------------------------------------------------------------------------------
 switch:
   - platform: restart
     name: "Livingroom Restart"
-
+#---------------------------------------------------------------------------------------------------
 time:
   - platform: homeassistant
     id: esptime
-
+#---------------------------------------------------------------------------------------------------
 text_sensor:
   - platform: wifi_info
     ip_address:
@@ -57,22 +63,22 @@ text_sensor:
       name: Livingroom SSID
     mac_address:
       name: Livingroom Mac
-
+#---------------------------------------------------------------------------------------------------
 uart:
   rx_pin: GPIO3
   tx_pin: GPIO1
   baud_rate: 9600
-
+#---------------------------------------------------------------------------------------------------
 i2c:
   - id: bus_a
     sda: 21
     scl: 22
-
+#---------------------------------------------------------------------------------------------------
 sensor:
   - platform: wifi_signal
     name: "Livingroom Signal Strength"
     update_interval: 60s
-
+#--------------------------------------
   - platform: sds011
     update_interval: 0min
     pm_2_5:
@@ -81,7 +87,7 @@ sensor:
     pm_10_0:
       name: "Livingroom PM <10.0µm"
       id: LRPM100
-
+#--------------------------------------
   - platform: scd30
     i2c_id: bus_a
     co2:
@@ -98,7 +104,7 @@ sensor:
     automatic_self_calibration: false
     address: 0x61
     update_interval: 60s
-
+#---------------------------------------------------------------------------------------------------
 # Example on how to implement a UI section in HA for manual calibration.
 # Note: Please enter first a CO2 value before pressing the button.
 button:
@@ -109,7 +115,7 @@ button:
       then:
         - scd30.force_recalibration_with_reference:
             value: !lambda 'return id(co2_cal).state;'
-
+#---------------------------------------------------------------------------------------------------
 number:
   - platform: template
     name: "Livingroom CO2 Cal Value"
@@ -120,32 +126,3 @@ number:
     id: co2_cal
     icon: "mdi:molecule-co2"
     entity_category: "config"
-
-#  - platform: bme280_i2c
-#    i2c_id: bus_a
-#    temperature:
-#      name: "Livingroom Temperature"
-#      id: LRTemp
-#      oversampling: 16x
-#    pressure:
-#      name: "Livingroom Pressure"
-#      id: LRPressure
-#      filters:
-#        - offset: 209.95611510218745
-#    humidity:
-#      name: "Livingroom Humidity"
-#      id: LRHumidity
-#    address: 0x76
-#    update_interval: 60s
-
-#  - platform: ccs811
-#    i2c_id: bus_a
-#    eco2:
-#      name: "Livingroom eCO2"
-#    tvoc:
-#      name: "Livingroom VOC"
-#    temperature: LRTemp
-#    humidity: LRHumidity
-#    baseline: 0x3EC6
-#    address: 0x5A
-#    update_interval: 60s
