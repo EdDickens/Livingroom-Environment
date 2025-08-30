@@ -1,6 +1,6 @@
 substitutions:
   name: "livingroom-enviro"
-  friendly_name: livingroom-enviro
+  friendly_name: Livingroom Enviro
 #---------------------------------------------------------------------------------------------------
 esphome:
   name: ${name}
@@ -41,15 +41,10 @@ wifi:
   password: !secret wifi_password
 
   fast_connect: off
-#--------------------------------------
-  # Enable fallback hotspot (captive portal) in case wifi connection fails
-#  ap:
-#    ssid: "Livingroom Fallback"
-#    password: !secret fb_password
 #---------------------------------------------------------------------------------------------------
 switch:
   - platform: restart
-    name: "Livingroom Restart"
+    name: "${friendly_name} Restart"
 #---------------------------------------------------------------------------------------------------
 time:
   - platform: homeassistant
@@ -58,11 +53,13 @@ time:
 text_sensor:
   - platform: wifi_info
     ip_address:
-      name: Livingroom IP
+      name: ${friendly_name} IP
+      update_interval: 1h
     ssid:
-      name: Livingroom SSID
+      name: ${friendly_name} SSID
+      update_interval: 1h
     mac_address:
-      name: Livingroom Mac
+      name: ${friendly_name} Mac
 #---------------------------------------------------------------------------------------------------
 uart:
   rx_pin: GPIO3
@@ -76,28 +73,28 @@ i2c:
 #---------------------------------------------------------------------------------------------------
 sensor:
   - platform: wifi_signal
-    name: "Livingroom Signal Strength"
+    name: "${friendly_name} Signal Strength"
     update_interval: 60s
 #--------------------------------------
   - platform: sds011
     update_interval: 0min
     pm_2_5:
-      name: "Livingroom PM <2.5µm"
+      name: "${friendly_name} PM <2.5µm"
       id: LRPM25
     pm_10_0:
-      name: "Livingroom PM <10.0µm"
+      name: "${friendly_name} PM <10.0µm"
       id: LRPM100
 #--------------------------------------
   - platform: scd30
     i2c_id: bus_a
     co2:
-      name: "Livingroom scd30_CO2"
+      name: "${friendly_name} scd30_CO2"
       accuracy_decimals: 1
     temperature:
-      name: "Livingroom scd30_Temperature"
+      name: "${friendly_name} scd30_Temperature"
       accuracy_decimals: 1
     humidity:
-      name: "Livingroom scd30_Humidity"
+      name: "${friendly_name} scd30_Humidity"
       accuracy_decimals: 1
     temperature_offset: 1.5 °C
     altitude_compensation: 1945m
@@ -109,7 +106,7 @@ sensor:
 # Note: Please enter first a CO2 value before pressing the button.
 button:
   - platform: template
-    name: "Livingroom SCD30 Manual Cal"
+    name: "${friendly_name} SCD30 Manual Cal"
     entity_category: "config"
     on_press:
       then:
@@ -118,7 +115,7 @@ button:
 #---------------------------------------------------------------------------------------------------
 number:
   - platform: template
-    name: "Livingroom CO2 Cal Value"
+    name: "${friendly_name} CO2 Cal Value"
     optimistic: true
     min_value: 350
     max_value: 4500
